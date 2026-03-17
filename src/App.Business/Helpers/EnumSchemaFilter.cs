@@ -1,0 +1,17 @@
+﻿namespace Project.Application.Helpers;
+
+public class EnumSchemaFilter : ISchemaFilter
+{
+    public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+    {
+        if (context.Type.IsEnum)
+        {
+            schema.Type = "string";
+            schema.Enum.Clear();
+            foreach (var name in Enum.GetNames(context.Type))
+            {
+                schema.Enum.Add(new OpenApiString(name));
+            }
+        }
+    }
+}

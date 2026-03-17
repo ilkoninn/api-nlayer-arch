@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="App.API/App.API.csproj" />
+  <Project Path="App.Business/App.Business.csproj" Id="215553cb-aa9b-4485-9f36-83062d6a601b" />
+  <Project Path="App.Core/App.Core.csproj" Id="ad93d5cb-f1db-42ee-a69e-5204aa4fee81" />
+  <Project Path="App.DAL/App.DAL.csproj" Id="0502eddb-b3c7-4c6a-a7bd-c6f67858161b" />
+</Solution>

@@ -1,57 +1,46 @@
-﻿using App.Core.Exceptions.Commons;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace App.API.Middlewares
+namespace App.API.Middlewares;
+
+public class GlobalExceptionHandlerMiddleware(RequestDelegate next)
 {
-    public class GlobalExceptionHandlerMiddleware
+    public async Task InvokeAsync(HttpContext context)
     {
-        private readonly RequestDelegate _next;
-
-        public GlobalExceptionHandlerMiddleware(RequestDelegate next)
+        try
         {
-            _next = next;
+            await next(context);
         }
-
-        public async Task InvokeAsync(HttpContext context)
+        catch (Exception ex)
         {
-            try
-            {
-                await _next(context);
-            }
-            catch (Exception ex)
-            {
-                await HandleException(context, ex);
-            }
-        }
-
-        private Task HandleException(HttpContext context, Exception ex)
-        {
-            var code = StatusCodes.Status500InternalServerError;
-
-            switch (ex)
-            {
-                case EntityNotFoundException:
-                    code = StatusCodes.Status404NotFound;
-                    break;
-                case UnauthorizedAccessException:
-                    code = StatusCodes.Status401Unauthorized;
-                    break;
-            }
-
-            var errorResponse = new
-            {
-                status = code,
-                message = ex.Message,
-                inner = ex.InnerException?.Message,
-                inner2 = ex.InnerException?.InnerException?.Message,
-            };
-
-            var result = JsonConvert.SerializeObject(errorResponse);
-
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = code;
-
-            return context.Response.WriteAsync(result);
+            await HandleException(context, ex);
         }
     }
+
+    private static Task HandleException(HttpContext context, Exception ex)
+    {
+        var code = StatusCodes.Status500InternalServerError;
+
+        switch (ex)
+        {
+            case UnauthorizedAccessException:
+                code = StatusCodes.Status401Unauthorized;
+                break;
+        }
+
+        var errorResponse = new
+        {
+            status = code,
+            message = ex.Message,
+            inner = ex.InnerException?.Message,
+            inner2 = ex.InnerException?.InnerException?.Message,
+        };
+
+        var result = JsonConvert.SerializeObject(errorResponse);
+
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = code;
+
+        return context.Response.WriteAsync(result);
+    }
 }
+

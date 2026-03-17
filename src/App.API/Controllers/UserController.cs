@@ -1,97 +1,75 @@
-﻿using App.Business.Services.InternalServices.Interfaces;
-using App.Business.Validators.UserValidators;
-using App.Core.DTOs.UserDTOs;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿namespace App.Api.Controllers.Admin;
 
-namespace App.API.Controllers
+[ApiController]
+[Route("api/admin/users")]
+[Authorize]
+public sealed class UsersController(IUserService userService) : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UserController : ControllerBase
-    {
-        private readonly IUserService _userService;
+	//  ===============================
+	//  Admin operations
+	//  ===============================
 
-        public UserController(IUserService userService)
-        {
-            _userService = userService;
-        }
+	// GET: api/admin/users
+	[HttpGet]
+	public async Task<ActionResult<PagedResult<UserResponseDto>>> GetAll(
+		[FromQuery] UserListQueryDto query, CancellationToken ct)
+	{
+		var result = await userService.GetAllAsync(query, ct);
+		return Ok(result);
+	}
 
-        [HttpGet]
-        [Authorize(Roles = "Admin, CEO, Manager, COFounder")]
-        public async Task<IActionResult> GetAllAsync()
-        {
-            var result = await _userService.GetAllAsync();
+	// GET: api/admin/users/{id}
+	[HttpGet("{id:guid}")]
+	public async Task<ActionResult<UserResponseDto>> GetById([FromRoute] Guid id, CancellationToken ct)
+	{
+		var user = await userService.GetByIdAsync(id, ct);
+		return Ok(user);
+	}
 
-            return Ok(result);
-        }
+	// POST: api/admin/users
+	[HttpPost]
+	public async Task<IActionResult> Create([FromBody] CreateUserDto dto, CancellationToken ct)
+	{
+		await userService.CreateAsync(dto, ct);
 
-        [HttpPatch("ban/{id}")]
-        [Authorize(Roles = "Admin, CEO, Manager")]
-        public async Task<IActionResult> LockedOutAsync(string id)
-        {
-            await _userService.LockedOutAsync(id);
-            return Ok();
-        }
+		return StatusCode(StatusCodes.Status201Created);
+	}
 
-        [HttpPatch("recover/{id}")]
-        [Authorize(Roles = "Admin, CEO, Manager")]
-        public async Task<IActionResult> RecoverAsync(string id)
-        {
-            await _userService.RecoverAsync(id);
-            return Ok();
-        }
+	// PUT: api/admin/users/{id}
+	[HttpPut("{id:guid}")]
+	public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateUserDto dto, CancellationToken ct)
+	{
+		await userService.UpdateAsync(id, dto, ct);
 
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin, CEO, Manager")]
-        public async Task<IActionResult> RemoveAsync(string id)
-        {
-            await _userService.RemoveAsync(id);
-            return Ok();
-        }
+		return NoContent();
+	}
 
-        [HttpPost]
-        [Authorize(Roles = "Admin, CEO, Manager")]
-        public async Task<IActionResult> CreateAsync([FromForm] CreateUserDTO dto)
-        {
-            var validationResult = await new CreateUserDTOValidator().ValidateAsync(dto);
 
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }
+	// PATCH: api/admin/users/{id}/ban
+	[HttpPatch("ban/{id:guid}")]
+	public async Task<IActionResult> Ban([FromRoute] Guid id, CancellationToken ct)
+	{
+		await userService.BanAsync(id, ct);
 
-            var result = await _userService.AddAsync(dto);
-            return Ok(result);
-        }
+		return NoContent();
+	}
 
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin, CEO, Manager")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromForm] UpdateUserDTO dto)
-        {
-            var validationResult = await new UpdateUserDTOValidator().ValidateAsync(dto);
+	// PATCH: api/admin/users/{id}/unban
+	[HttpPatch("unban/{id:guid}")]
+	public async Task<IActionResult> Unban([FromRoute] Guid id, CancellationToken ct)
+	{
+		await userService.UnBanAsync(id, ct);
 
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }
+		return NoContent();
+	}
 
-            var result = await _userService.UpdateAsync(id, dto);
-            return Ok(result);
-        }
 
-        [HttpPut("main/{id}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromForm] UpdateMainUserDTO dto)
-        {
-            var validationResult = await new UpdateMainUserDTOValidator().ValidateAsync(dto);
+	// DELETE: api/admin/users/{id}   (Hard delete)
+	[HttpDelete("{id:guid}")]
+	public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken ct)
+	{
+		await userService.DeleteAsync(id, ct);
 
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }
-
-            var result = await _userService.UpdateAsync(id, dto);
-            return Ok(result);
-        }
-    }
+		return NoContent();
+	}
 }
