@@ -36,7 +36,6 @@ namespace App.DAL.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("CoverImageUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedById")
@@ -472,7 +471,6 @@ namespace App.DAL.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("CoverImageUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedById")
@@ -486,7 +484,6 @@ namespace App.DAL.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("IconUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<bool>("IsActive")
@@ -586,7 +583,6 @@ namespace App.DAL.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ProfileImageUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Role")

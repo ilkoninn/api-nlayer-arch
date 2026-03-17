@@ -70,6 +70,72 @@ namespace App.DAL.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "BlogCategories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Slug = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    CreatedById = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModifiedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    LastModifiedById = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlogCategories", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Blogs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Title = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Slug = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Content = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Excerpt = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    PublishedAt = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
+                    MetaTitle = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MetaDescription = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CanonicalUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Tags = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CoverImageUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    OgImageUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    CreatedById = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModifiedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    LastModifiedById = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Blogs", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Contacts",
                 columns: table => new
                 {
@@ -100,13 +166,14 @@ namespace App.DAL.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "PropertyTypes",
+                name: "Faqs",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
+                    Question = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Order = table.Column<int>(type: "int", nullable: false),
+                    Answer = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
                     CreatedById = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -118,7 +185,69 @@ namespace App.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PropertyTypes", x => x.Id);
+                    table.PrimaryKey("PK_Faqs", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ProjectCategories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Slug = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    CreatedById = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModifiedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    LastModifiedById = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProjectCategories", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Services",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    Title = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Slug = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Excerpt = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Content = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CoverImageUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IconUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MetaTitle = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    MetaDescription = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CanonicalUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    CreatedById = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModifiedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    LastModifiedById = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Services", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -143,6 +272,32 @@ namespace App.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Settings", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "TeamMembers",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    FullName = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Role = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ProfileImageUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    CreatedById = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastModifiedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
+                    LastModifiedById = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TeamMembers", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -268,24 +423,50 @@ namespace App.DAL.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Properties",
+                name: "BlogBlogCategory",
+                columns: table => new
+                {
+                    BlogCategoriesId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    BlogsId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BlogBlogCategory", x => new { x.BlogCategoriesId, x.BlogsId });
+                    table.ForeignKey(
+                        name: "FK_BlogBlogCategory_BlogCategories_BlogCategoriesId",
+                        column: x => x.BlogCategoriesId,
+                        principalTable: "BlogCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_BlogBlogCategory_Blogs_BlogsId",
+                        column: x => x.BlogsId,
+                        principalTable: "Blogs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Projects",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Title = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Description = table.Column<string>(type: "longtext", nullable: false)
+                    Slug = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Price = table.Column<decimal>(type: "decimal(65,30)", nullable: false),
-                    ViewCount = table.Column<int>(type: "int", nullable: false),
-                    ApplicantName = table.Column<string>(type: "longtext", nullable: false)
+                    Excerpt = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ApplicantPhone = table.Column<string>(type: "longtext", nullable: false)
+                    Content = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ApplicantEmail = table.Column<string>(type: "longtext", nullable: false)
+                    MetaTitle = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    PropertyTypeId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    MetaDescription = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    CanonicalUrl = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ProjectCategoryId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
                     CreatedById = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -297,29 +478,26 @@ namespace App.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Properties", x => x.Id);
+                    table.PrimaryKey("PK_Projects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Properties_PropertyTypes_PropertyTypeId",
-                        column: x => x.PropertyTypeId,
-                        principalTable: "PropertyTypes",
+                        name: "FK_Projects_ProjectCategories_ProjectCategoryId",
+                        column: x => x.ProjectCategoryId,
+                        principalTable: "ProjectCategories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "PropertyFieldDefinitions",
+                name: "ProjectFeatures",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Label = table.Column<string>(type: "longtext", nullable: false)
+                    Key = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    IsRequired = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    Placeholder = table.Column<string>(type: "longtext", nullable: true)
+                    Value = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Order = table.Column<int>(type: "int", nullable: false),
-                    PropertyTypeId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ProjectId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
                     CreatedById = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -331,26 +509,24 @@ namespace App.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PropertyFieldDefinitions", x => x.Id);
+                    table.PrimaryKey("PK_ProjectFeatures", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PropertyFieldDefinitions_PropertyTypes_PropertyTypeId",
-                        column: x => x.PropertyTypeId,
-                        principalTable: "PropertyTypes",
+                        name: "FK_ProjectFeatures_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "PropertyImages",
+                name: "ProjectImages",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     ImageUrl = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Order = table.Column<int>(type: "int", nullable: false),
-                    IsCover = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    PropertyId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ProjectId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
                     CreatedById = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -362,112 +538,11 @@ namespace App.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PropertyImages", x => x.Id);
+                    table.PrimaryKey("PK_ProjectImages", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PropertyImages_Properties_PropertyId",
-                        column: x => x.PropertyId,
-                        principalTable: "Properties",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "PropertyInquiries",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    InquirerFullName = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    InquirerPhone = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    InquirerEmail = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Message = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    InquiryStatus = table.Column<int>(type: "int", nullable: false),
-                    PropertyId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
-                    CreatedById = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastModifiedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
-                    LastModifiedById = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PropertyInquiries", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PropertyInquiries_Properties_PropertyId",
-                        column: x => x.PropertyId,
-                        principalTable: "Properties",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "PropertyFieldOption",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Value = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PropertyFieldDefinitionId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
-                    CreatedById = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastModifiedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
-                    LastModifiedById = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PropertyFieldOption", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PropertyFieldOption_PropertyFieldDefinitions_PropertyFieldDe~",
-                        column: x => x.PropertyFieldDefinitionId,
-                        principalTable: "PropertyFieldDefinitions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "PropertyFieldValues",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    PropertyId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    PropertyFieldDefinitionId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    Value = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    CreatedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
-                    CreatedById = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    LastModifiedOn = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: false),
-                    LastModifiedById = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    IsDeleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PropertyFieldValues", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PropertyFieldValues_Properties_PropertyId",
-                        column: x => x.PropertyId,
-                        principalTable: "Properties",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PropertyFieldValues_PropertyFieldDefinitions_PropertyFieldDe~",
-                        column: x => x.PropertyFieldDefinitionId,
-                        principalTable: "PropertyFieldDefinitions",
+                        name: "FK_ProjectImages_Projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -511,39 +586,24 @@ namespace App.DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Properties_PropertyTypeId",
-                table: "Properties",
-                column: "PropertyTypeId");
+                name: "IX_BlogBlogCategory_BlogsId",
+                table: "BlogBlogCategory",
+                column: "BlogsId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PropertyFieldDefinitions_PropertyTypeId",
-                table: "PropertyFieldDefinitions",
-                column: "PropertyTypeId");
+                name: "IX_ProjectFeatures_ProjectId",
+                table: "ProjectFeatures",
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PropertyFieldOption_PropertyFieldDefinitionId",
-                table: "PropertyFieldOption",
-                column: "PropertyFieldDefinitionId");
+                name: "IX_ProjectImages_ProjectId",
+                table: "ProjectImages",
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PropertyFieldValues_PropertyFieldDefinitionId",
-                table: "PropertyFieldValues",
-                column: "PropertyFieldDefinitionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PropertyFieldValues_PropertyId",
-                table: "PropertyFieldValues",
-                column: "PropertyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PropertyImages_PropertyId",
-                table: "PropertyImages",
-                column: "PropertyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PropertyInquiries_PropertyId",
-                table: "PropertyInquiries",
-                column: "PropertyId");
+                name: "IX_Projects_ProjectCategoryId",
+                table: "Projects",
+                column: "ProjectCategoryId");
         }
 
         /// <inheritdoc />
@@ -565,22 +625,28 @@ namespace App.DAL.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "BlogBlogCategory");
+
+            migrationBuilder.DropTable(
                 name: "Contacts");
 
             migrationBuilder.DropTable(
-                name: "PropertyFieldOption");
+                name: "Faqs");
 
             migrationBuilder.DropTable(
-                name: "PropertyFieldValues");
+                name: "ProjectFeatures");
 
             migrationBuilder.DropTable(
-                name: "PropertyImages");
+                name: "ProjectImages");
 
             migrationBuilder.DropTable(
-                name: "PropertyInquiries");
+                name: "Services");
 
             migrationBuilder.DropTable(
                 name: "Settings");
+
+            migrationBuilder.DropTable(
+                name: "TeamMembers");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -589,13 +655,16 @@ namespace App.DAL.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "PropertyFieldDefinitions");
+                name: "BlogCategories");
 
             migrationBuilder.DropTable(
-                name: "Properties");
+                name: "Blogs");
 
             migrationBuilder.DropTable(
-                name: "PropertyTypes");
+                name: "Projects");
+
+            migrationBuilder.DropTable(
+                name: "ProjectCategories");
         }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace App.DAL.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260223191051_blogTablesUpdated")]
-    partial class blogTablesUpdated
+    [Migration("20260317122126_createDbAndTables")]
+    partial class createDbAndTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,6 @@ namespace App.DAL.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("CoverImageUrl")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("CreatedById")
@@ -285,6 +284,242 @@ namespace App.DAL.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("App.Core.Entities.Projects.Project", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("CanonicalUrl")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Excerpt")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LastModifiedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("LastModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("MetaDescription")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("MetaTitle")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("ProjectCategoryId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectCategoryId");
+
+                    b.ToTable("Projects");
+                });
+
+            modelBuilder.Entity("App.Core.Entities.Projects.ProjectCategory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LastModifiedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("LastModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProjectCategories");
+                });
+
+            modelBuilder.Entity("App.Core.Entities.Projects.ProjectFeature", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Key")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("LastModifiedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("LastModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectFeatures");
+                });
+
+            modelBuilder.Entity("App.Core.Entities.Projects.ProjectImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LastModifiedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("LastModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<Guid>("ProjectId")
+                        .HasColumnType("char(36)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProjectId");
+
+                    b.ToTable("ProjectImages");
+                });
+
+            modelBuilder.Entity("App.Core.Entities.Service", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("CanonicalUrl")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CoverImageUrl")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Excerpt")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("IconUrl")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LastModifiedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("LastModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("MetaDescription")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("MetaTitle")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Services");
+                });
+
             modelBuilder.Entity("App.Core.Entities.Setting", b =>
                 {
                     b.Property<Guid>("Id")
@@ -320,6 +555,46 @@ namespace App.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Settings");
+                });
+
+            modelBuilder.Entity("App.Core.Entities.TeamMember", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LastModifiedById")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTimeOffset>("LastModifiedOn")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ProfileImageUrl")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TeamMembers");
                 });
 
             modelBuilder.Entity("BlogBlogCategory", b =>
@@ -467,6 +742,39 @@ namespace App.DAL.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("App.Core.Entities.Projects.Project", b =>
+                {
+                    b.HasOne("App.Core.Entities.Projects.ProjectCategory", "ProjectCategory")
+                        .WithMany("Projects")
+                        .HasForeignKey("ProjectCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProjectCategory");
+                });
+
+            modelBuilder.Entity("App.Core.Entities.Projects.ProjectFeature", b =>
+                {
+                    b.HasOne("App.Core.Entities.Projects.Project", "Project")
+                        .WithMany("Features")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("App.Core.Entities.Projects.ProjectImage", b =>
+                {
+                    b.HasOne("App.Core.Entities.Projects.Project", "Project")
+                        .WithMany("Images")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Project");
+                });
+
             modelBuilder.Entity("BlogBlogCategory", b =>
                 {
                     b.HasOne("App.Core.Entities.Blogs.BlogCategory", null)
@@ -531,6 +839,18 @@ namespace App.DAL.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("App.Core.Entities.Projects.Project", b =>
+                {
+                    b.Navigation("Features");
+
+                    b.Navigation("Images");
+                });
+
+            modelBuilder.Entity("App.Core.Entities.Projects.ProjectCategory", b =>
+                {
+                    b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618
         }
