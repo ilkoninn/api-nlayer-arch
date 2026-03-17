@@ -1,8 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace App.API.Middlewares;
 
-public class GlobalExceptionHandlerMiddleware(RequestDelegate next)
+public class GlobalExceptionHandlerMiddleware(RequestDelegate next, ILogger<GlobalExceptionHandlerMiddleware> logger)
 {
     public async Task InvokeAsync(HttpContext context)
     {
@@ -12,6 +13,8 @@ public class GlobalExceptionHandlerMiddleware(RequestDelegate next)
         }
         catch (Exception ex)
         {
+            var message = ex.InnerException?.Message ?? ex.Message;
+            logger.LogError("Unhandled exception for {Method} {Path} - {ErrorMessage}", context.Request.Method, context.Request.Path, message);
             await HandleException(context, ex);
         }
     }

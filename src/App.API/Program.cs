@@ -1,16 +1,39 @@
-var builder = WebApplication.CreateBuilder(args);
+using Serilog;
 
-// Add services to the container.
-builder.Services.AddAPI(builder.Configuration);
-builder.Services.AddDAL(builder.Configuration);
-builder.Services.AddBusiness();
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-var app = builder.Build();
+try
+{
+    Log.Information("Starting application...");
 
-// Apply pending migrations and seed the database
-using var scope = app.Services.CreateScope();
-await AutomatedMigration.MigrateAsync(scope.ServiceProvider);
+    var builder = WebApplication.CreateBuilder(args);
 
-app.UseAPI();
+    builder.Host.UseSerilog((context, services, configuration) =>
+        configuration.ReadFrom.Configuration(context.Configuration)
+                     .ReadFrom.Services(services));
 
-app.Run();
+    // Add services to the container.
+    builder.Services.AddAPI(builder.Configuration);
+    builder.Services.AddDAL(builder.Configuration);
+    builder.Services.AddBusiness();
+
+    var app = builder.Build();
+
+    // Apply pending migrations and seed the database
+    using var scope = app.Services.CreateScope();
+    await AutomatedMigration.MigrateAsync(scope.ServiceProvider);
+
+    app.UseAPI();
+
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Application terminated unexpectedly.");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
