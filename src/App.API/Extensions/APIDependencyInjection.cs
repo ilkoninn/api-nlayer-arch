@@ -1,4 +1,4 @@
-﻿namespace App.API.Extensions;
+namespace App.API.Extensions;
 
 public static class APIDependencyInjection
 {
@@ -54,9 +54,9 @@ public static class APIDependencyInjection
         {
             options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "API",
+                Title = "API and layer architecture",
                 Version = "v1",
-                Description = "Backend API"
+                Description = "API and layer architecture — ASP.NET Core Web API"
             });
 
             // JWT Bearer auth

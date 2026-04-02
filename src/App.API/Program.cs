@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -26,6 +28,23 @@ try
     await AutomatedMigration.MigrateAsync(scope.ServiceProvider);
 
     app.UseAPI();
+
+    app.Lifetime.ApplicationStarted.Register(() =>
+    {
+        var server = app.Services.GetRequiredService<IServer>();
+        var addresses = server.Features.Get<IServerAddressesFeature>()?.Addresses;
+        if (addresses is null || addresses.Count == 0)
+            return;
+
+        foreach (var address in addresses)
+            Log.Information("Now listening at {Url}", address);
+
+        var baseUrl = addresses.FirstOrDefault(a =>
+            a.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            a.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
+        if (baseUrl is not null)
+            Log.Information("Swagger UI: {SwaggerUrl}", $"{baseUrl.TrimEnd('/')}/swagger");
+    });
 
     app.Run();
 }
