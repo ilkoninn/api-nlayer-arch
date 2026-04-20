@@ -1,6 +1,6 @@
 ﻿namespace App.Core.Entities.Common;
 
-public abstract class AuditableEntity : BaseEntity
+public abstract class AuditableEntity : BaseEntity, IRepositoryEntity<Guid>
 {
 	public DateTimeOffset CreatedOn { get; set; }
 	public string? CreatedById { get; set; }

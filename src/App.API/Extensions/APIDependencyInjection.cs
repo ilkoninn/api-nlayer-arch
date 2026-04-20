@@ -6,11 +6,15 @@ public static class APIDependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.AddControllers();
+        services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            });
 
         services.AddEndpointsApiExplorer();
         services.AddSwagger();
-        services.AddCorsPolicies();
+        services.AddCorsPolicies(configuration);
         services.AddJwt(configuration);
         services.AddAuthorization();
 
@@ -35,7 +39,7 @@ public static class APIDependencyInjection
 
         // Add Middlewares Here
         app.AddMiddlewares();
-        
+
         app.MapControllers();
 
         return app;
@@ -54,9 +58,15 @@ public static class APIDependencyInjection
         {
             options.SwaggerDoc("v1", new OpenApiInfo
             {
-                Title = "API and layer architecture",
+                Title = "API",
                 Version = "v1",
-                Description = "API and layer architecture — ASP.NET Core Web API"
+                Description = "Backend API"
+            });
+
+            options.TagActionsBy(api =>
+            {
+                api.ActionDescriptor.RouteValues.TryGetValue("controller", out var controllerName);
+                return new[] { controllerName.ToSwaggerTagDisplayName() };
             });
 
             // JWT Bearer auth
@@ -93,17 +103,17 @@ public static class APIDependencyInjection
     }
 
     private static IServiceCollection AddCorsPolicies(
-        this IServiceCollection services)
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
+        var origins = configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? new string[0];
+
         services.AddCors(options =>
         {
             options.AddPolicy("AllowReactApp", builder =>
             {
                 builder
-                    .WithOrigins(
-                        "http://localhost:5173", // Vite dev
-                        "http://localhost:5174" // Vite dev alternative
-                    )
+                    .WithOrigins(origins)
                     .AllowAnyHeader()
                     .AllowAnyMethod()
                     .AllowCredentials();
@@ -133,6 +143,7 @@ public static class APIDependencyInjection
         })
         .AddJwtBearer(options =>
         {
+            options.MapInboundClaims = false;
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -142,6 +153,8 @@ public static class APIDependencyInjection
                 ValidIssuer = issuer,
                 ValidAudience = audience,
                 IssuerSigningKey = signingKey,
+                NameClaimType = "uid",
+                RoleClaimType = "role",
                 LifetimeValidator = (notBefore, expires, tokenToValidate, tokenValidationParameters) =>
                 {
                     return expires != null && expires > DateTime.UtcNow;

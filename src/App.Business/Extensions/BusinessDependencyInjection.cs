@@ -1,4 +1,4 @@
-﻿namespace App.Business.Extensions;
+namespace App.Business.Extensions;
 
 public static class BusinessDependencyInjection
 {
@@ -28,7 +28,5 @@ public static class BusinessDependencyInjection
         services.AddScoped<IBlogService, BlogService>();
         services.AddScoped<IBlogCategoryService, BlogCategoryService>();
 
-		services.AddScoped<IProjectService, ProjectService>();
-		services.AddScoped<IProjectCategoryService, ProjectCategoryService>();
 	}
 }

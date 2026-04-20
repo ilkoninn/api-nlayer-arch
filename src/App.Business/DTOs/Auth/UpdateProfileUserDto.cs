@@ -7,4 +7,7 @@ public class UpdateProfileUserDto
     public string Email { get; set; } = default!;
     public string PhoneNumber { get; set; } = default!;
     public string Password { get; set; } = default!;
+
+    /// <summary>Müəllim üçün; tələbə ödənişi göndərəcəyi kart / hesab (maskalanmış).</summary>
+    public string? PayoutCardHint { get; set; }
 }

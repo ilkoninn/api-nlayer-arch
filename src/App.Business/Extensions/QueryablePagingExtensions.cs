@@ -1,5 +1,3 @@
-﻿using App.Core.Entities.Common;
-
 namespace App.Business.Extensions;
 
 public static class QueryablePagingExtensions

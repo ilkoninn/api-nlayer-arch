@@ -1,7 +1,3 @@
-using Microsoft.AspNetCore.Hosting.Server;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Serilog;
-
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .CreateBootstrapLogger();
@@ -14,7 +10,9 @@ try
 
     builder.Host.UseSerilog((context, services, configuration) =>
         configuration.ReadFrom.Configuration(context.Configuration)
-                     .ReadFrom.Services(services));
+                     .ReadFrom.Services(services)
+                     .Enrich.WithProperty("ApiBaseUrl", context.Configuration["Api:BaseUrl"] ?? "")
+                     .Enrich.WithProperty("SwaggerUrl", context.Configuration["Api:SwaggerUrl"] ?? ""));
 
     // Add services to the container.
     builder.Services.AddAPI(builder.Configuration);
@@ -29,22 +27,10 @@ try
 
     app.UseAPI();
 
-    app.Lifetime.ApplicationStarted.Register(() =>
-    {
-        var server = app.Services.GetRequiredService<IServer>();
-        var addresses = server.Features.Get<IServerAddressesFeature>()?.Addresses;
-        if (addresses is null || addresses.Count == 0)
-            return;
-
-        foreach (var address in addresses)
-            Log.Information("Now listening at {Url}", address);
-
-        var baseUrl = addresses.FirstOrDefault(a =>
-            a.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-            a.StartsWith("https://", StringComparison.OrdinalIgnoreCase));
-        if (baseUrl is not null)
-            Log.Information("Swagger UI: {SwaggerUrl}", $"{baseUrl.TrimEnd('/')}/swagger");
-    });
+    var apiUrl = app.Configuration["Api:BaseUrl"];
+    var swaggerUrl = app.Configuration["Api:SwaggerUrl"];
+    Log.Information("API URL: {ApiUrl}", apiUrl);
+    Log.Information("Swagger: {SwaggerUrl}", swaggerUrl);
 
     app.Run();
 }

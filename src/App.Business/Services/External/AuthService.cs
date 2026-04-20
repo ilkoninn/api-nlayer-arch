@@ -1,4 +1,4 @@
-﻿namespace App.Business.Services.External;
+namespace App.Business.Services.External;
 
 public class AuthService(
 	UserManager<User> manager,
@@ -12,8 +12,14 @@ public class AuthService(
 
 	public async Task<string> GetAccessTokenAsync(LoginDto loginDto)
 	{
-		var user = await manager.Users.FirstOrDefaultAsync(u => u.UserName == loginDto.Username) ??
-			throw new KeyNotFoundException("İstifadəçi tapılmadı.");
+		var key = loginDto.Username.Trim();
+		var user = await manager.FindByNameAsync(key)
+			?? await manager.FindByEmailAsync(key);
+		if (user is null)
+			throw new UnauthorizedAccessException("Daxilolma uğursuz.");
+
+		if (user.IsDeleted)
+			throw new UnauthorizedAccessException("Hesab tapılmadı.");
 
 		if (user.LockoutEnd > DateTimeOffset.Now)
 			throw new InvalidOperationException("İstifadəçi Admin tərəfindən bloklanıb, Adminlə əlaqə saxlayın.");
@@ -21,9 +27,11 @@ public class AuthService(
 		if (!await manager.CheckPasswordAsync(user, loginDto.Password))
 			throw new UnauthorizedAccessException("Şifrə yanlışdır.");
 
-		var role = (await manager.GetRolesAsync(user)).FirstOrDefault() ?? "InvalidRole";
+		var roles = await manager.GetRolesAsync(user);
+		if (roles.Count == 0)
+			throw new UnauthorizedAccessException("Hesaba rol təyin edilməyib.");
 
-		var token = JwtTokenGenerator.GenerateToken(user.Id, role, configuration);
+		var token = JwtTokenGenerator.GenerateToken(user.Id, roles, configuration);
 
 		return token;
 	}
@@ -46,7 +54,11 @@ public class AuthService(
 		if (user is null)
 			return new ProfileUserDto { IsAuth = false };
 
-		var role = (await manager.GetRolesAsync(user)).FirstOrDefault() ?? "Moderator";
+		if (user.IsDeleted)
+			return new ProfileUserDto { IsAuth = false };
+
+		var roleList = (await manager.GetRolesAsync(user)).ToList();
+		var displayRole = PickDisplayRole(roleList);
 
 		var jwtToken = claimService.GetCurrentUserJwtToken() ?? string.Empty;
 
@@ -56,10 +68,13 @@ public class AuthService(
 		{
 			Id = user.Id,
 			IsAuth = expiration > DateTime.UtcNow,
+			FullName = user.FullName ?? string.Empty,
 			Email = user.Email ?? string.Empty,
 			UserName = user.UserName ?? string.Empty,
 			PhoneNumber = user.PhoneNumber ?? string.Empty,
-			Role = role,
+			PayoutCardHint = user.PayoutCardHint,
+			Role = displayRole,
+			Roles = roleList,
 		};
 	}
 
@@ -70,16 +85,16 @@ public class AuthService(
 		if (string.IsNullOrWhiteSpace(userId))
 			return false;
 
-		var user = await manager.Users.AsNoTracking()
-									  .Where(u => u.Id.ToString() == userId)
-									  .FirstOrDefaultAsync(ct);
+		var user = await manager.FindByIdAsync(userId);
 
 		if (user is null) return false;
 
-		user.FullName = updateProfileUserDto.FullName;
-		user.UserName = updateProfileUserDto.UserName;
-		user.Email = updateProfileUserDto.Email;
-		user.PhoneNumber = updateProfileUserDto.PhoneNumber;
+		user.FullName = updateProfileUserDto.FullName?.Trim() ?? string.Empty;
+		user.UserName = updateProfileUserDto.UserName?.Trim() ?? user.UserName;
+		user.Email = updateProfileUserDto.Email?.Trim() ?? user.Email;
+		user.PhoneNumber = updateProfileUserDto.PhoneNumber?.Trim() ?? string.Empty;
+
+		var rolesForProfile = await manager.GetRolesAsync(user);
 
 		var result = await manager.UpdateAsync(user);
 
@@ -88,13 +103,19 @@ public class AuthService(
 
 		if (!string.IsNullOrWhiteSpace(updateProfileUserDto.Password))
 		{
-			var token = await manager.GeneratePasswordResetTokenAsync(user);
-			var passwordResult = await manager.ResetPasswordAsync(user, token, updateProfileUserDto.Password);
+			var resetToken = await manager.GeneratePasswordResetTokenAsync(user);
+			var passwordResult = await manager.ResetPasswordAsync(user, resetToken, updateProfileUserDto.Password);
 
 			if (!passwordResult.Succeeded)
 				throw new Exception("Failed to update password.");
 		}
 
 		return true;
+	}
+
+	private static string PickDisplayRole(IReadOnlyList<string> roles)
+	{
+		if (roles.Contains(EUserRole.Admin.ToString())) return EUserRole.Admin.ToString();
+		return roles.Count > 0 ? roles[0] : string.Empty;
 	}
 }

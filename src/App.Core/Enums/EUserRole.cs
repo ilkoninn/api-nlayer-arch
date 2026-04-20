@@ -3,5 +3,4 @@
 public enum EUserRole
 {
     Admin,
-    Moderator,
 }

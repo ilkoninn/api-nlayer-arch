@@ -13,8 +13,9 @@ public static class DALDependencyInjection
 
 	private static void AddDatabase(this IServiceCollection services, IConfiguration configuration)
 	{
-		// SQL Database 
 		var connectionString = configuration.GetConnectionString("DefaultConnection");
+		if (string.IsNullOrWhiteSpace(connectionString))
+			throw new InvalidOperationException("ConnectionStrings:DefaultConnection is missing or empty.");
 
 		services.AddDbContext<AppDbContext>(options =>
 			options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 21)),

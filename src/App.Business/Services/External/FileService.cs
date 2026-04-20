@@ -3,10 +3,45 @@
 public class FileService(IWebHostEnvironment environment) : IFileService
 {
     private readonly string _baseUploadFolder = Path.Combine(environment.WebRootPath, "uploads");
-    private const long MaxFileSize = 5 * 1024 * 1024; // 5MB
-    private static readonly string[] AllowedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"];
+    private const long MaxImageFileSize = 5 * 1024 * 1024; // 5MB
+    private const long MaxMaterialFileSize = 20 * 1024 * 1024; // 20MB
+    private static readonly string[] AllowedImageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg"];
+    private static readonly string[] AllowedMaterialExtensions =
+    [
+        ".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg",
+        ".pdf",
+        ".doc", ".docx",
+        ".xls", ".xlsx",
+        ".ppt", ".pptx",
+        ".txt", ".csv", ".rtf",
+        ".zip", ".rar", ".7z"
+    ];
 
     public async Task<string> UploadAsync(IFormFile file, string folder, CancellationToken ct = default)
+        => await UploadInternalAsync(
+            file,
+            folder,
+            MaxImageFileSize,
+            AllowedImageExtensions,
+            ensureImageContent: true,
+            ct);
+
+    public async Task<string> UploadMaterialAsync(IFormFile file, string folder, CancellationToken ct = default)
+        => await UploadInternalAsync(
+            file,
+            folder,
+            MaxMaterialFileSize,
+            AllowedMaterialExtensions,
+            ensureImageContent: false,
+            ct);
+
+    private async Task<string> UploadInternalAsync(
+        IFormFile file,
+        string folder,
+        long maxFileSize,
+        string[] allowedExtensions,
+        bool ensureImageContent,
+        CancellationToken ct)
     {
         if (file is null)
             throw new ArgumentNullException(nameof(file));
@@ -15,7 +50,7 @@ public class FileService(IWebHostEnvironment environment) : IFileService
             throw new ArgumentException("Folder adı boş ola bilməz.", nameof(folder));
 
         // Validate file
-        FileChecker.ValidateFile(file, MaxFileSize, AllowedExtensions);
+        FileChecker.ValidateFile(file, maxFileSize, allowedExtensions, ensureImageContent);
 
         var uploadFolder = Path.Combine(_baseUploadFolder, folder.Trim());
 
@@ -37,7 +72,7 @@ public class FileService(IWebHostEnvironment environment) : IFileService
             await file.CopyToAsync(stream, ct);
 
             // Return relative URL path
-            return $"https://api.example.az/uploads/{folder.Trim()}/{uniqueFileName}";
+            return $"https://dev-asiyaflowers.runasp.net/uploads/{folder.Trim()}/{uniqueFileName}";
         }
         catch (Exception ex)
         {
@@ -69,45 +104,41 @@ public class FileService(IWebHostEnvironment environment) : IFileService
         return uploadedPaths;
     }
 
-    public async Task<bool> DeleteAsync(string filePath, CancellationToken ct = default)
+    public Task<bool> DeleteAsync(string filePath, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(filePath))
-            return false;
+            return Task.FromResult(false);
 
         try
         {
-            // Extract filename from URL path
             var fileName = Path.GetFileName(filePath);
             var physicalPath = Path.Combine(_baseUploadFolder, fileName);
 
-            // Try to find file in any subfolder if direct path doesn't work
             if (!File.Exists(physicalPath))
             {
                 var allFiles = Directory.EnumerateFiles(_baseUploadFolder, fileName, SearchOption.AllDirectories);
                 if (allFiles.Any())
-                {
                     physicalPath = allFiles.First();
-                }
             }
 
             if (File.Exists(physicalPath))
             {
                 File.Delete(physicalPath);
-                return true;
+                return Task.FromResult(true);
             }
 
-            return false;
+            return Task.FromResult(false);
         }
         catch
         {
-            return false;
+            return Task.FromResult(false);
         }
     }
 
-    public async Task<bool> FileExistsAsync(string filePath, CancellationToken ct = default)
+    public Task<bool> FileExistsAsync(string filePath, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(filePath))
-            return false;
+            return Task.FromResult(false);
 
         try
         {
@@ -115,15 +146,14 @@ public class FileService(IWebHostEnvironment environment) : IFileService
             var physicalPath = Path.Combine(_baseUploadFolder, fileName);
 
             if (File.Exists(physicalPath))
-                return true;
+                return Task.FromResult(true);
 
-            // Check in subfolders
             var allFiles = Directory.EnumerateFiles(_baseUploadFolder, fileName, SearchOption.AllDirectories);
-            return allFiles.Any();
+            return Task.FromResult(allFiles.Any());
         }
         catch
         {
-            return false;
+            return Task.FromResult(false);
         }
     }
 }

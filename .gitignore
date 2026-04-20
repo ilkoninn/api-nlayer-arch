@@ -24,9 +24,13 @@ src/.vs/
 ## Rider
 .idea/
 
-## Publish profiles (local dev only)
-*.pubxml
+## Publish — şifrə .pubxml.user-da qalır; paylaşılan profil: Properties/PublishProfiles/*.pubxml
 *.pubxml.user
+## App.API — həqiqi sırlar; nümunə: appsettings.example.json
+src/App.API/appsettings.json
+src/App.API/appsettings.Development.json
+## Gələcək real production (ayrıca)
+src/App.API/appsettings.Production.json
 
 ## Build results
 [Dd]ebug/

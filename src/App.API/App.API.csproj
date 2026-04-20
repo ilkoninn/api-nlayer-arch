@@ -26,6 +26,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\App.Business\App.Business.csproj" />
+		<ProjectReference Include="..\App.Core\App.Core.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

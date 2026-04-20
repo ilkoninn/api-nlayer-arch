@@ -1,4 +1,4 @@
-﻿namespace App.DAL.Persistence;
+namespace App.DAL.Persistence;
 
 public class AppDbContext(
 	DbContextOptions<AppDbContext> options,
@@ -16,16 +16,10 @@ public class AppDbContext(
 	public DbSet<BlogCategory> BlogCategories => Set<BlogCategory>();
 	public DbSet<Blog> Blogs => Set<Blog>();
 
-	// Projects
-	public DbSet<ProjectCategory> ProjectCategories => Set<ProjectCategory>();
-	public DbSet<ProjectFeature> ProjectFeatures => Set<ProjectFeature>();
-	public DbSet<ProjectImage> ProjectImages => Set<ProjectImage>();
-	public DbSet<Project> Projects => Set<Project>();
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 		base.OnModelCreating(modelBuilder);
+		modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 	}
 
 	public new async Task<int> SaveChangesAsync(CancellationToken ct = new())
@@ -47,6 +41,23 @@ public class AppDbContext(
 				case EntityState.Modified:
 					entry.Entity.LastModifiedById = userId;
 					entry.Entity.LastModifiedOn = DateTime.UtcNow;
+					break;
+			}
+		}
+
+		foreach (var entry in ChangeTracker.Entries<User>())
+		{
+			switch (entry.State)
+			{
+				case EntityState.Added:
+					entry.Entity.CreatedById = userId;
+					entry.Entity.CreatedOn = DateTimeOffset.UtcNow;
+					entry.Entity.LastModifiedById = userId;
+					entry.Entity.LastModifiedOn = DateTimeOffset.UtcNow;
+					break;
+				case EntityState.Modified:
+					entry.Entity.LastModifiedById = userId;
+					entry.Entity.LastModifiedOn = DateTimeOffset.UtcNow;
 					break;
 			}
 		}

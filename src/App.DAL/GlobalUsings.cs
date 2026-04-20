@@ -1,8 +1,7 @@
-﻿global using App.Core.Entities;
+global using App.Core.Entities;
 global using App.Core.Entities.Blogs;
 global using App.Core.Entities.Common;
 global using App.Core.Entities.Identities;
-global using App.Core.Entities.Projects;
 global using App.Core.Enums;
 global using App.Core.Interfaces;
 global using App.DAL.Persistence;
@@ -12,6 +11,7 @@ global using Microsoft.AspNetCore.Identity;
 global using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Design;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.EntityFrameworkCore.Query;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
